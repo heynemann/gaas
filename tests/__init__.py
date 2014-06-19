@@ -5,25 +5,35 @@ import os
 
 from cow.testing import CowTestCase
 from tornado.httpclient import AsyncHTTPClient
-import tornado.gen as gen
 
 from gaas.config import Config
 from gaas.server import GaasServer
+from gaas.models.repository import Repository
 
 
 class TestCase(CowTestCase):
-    @gen.coroutine
     def drop_collection(self, document):
-        yield document.objects.delete()
+        document.objects.delete(self.stop)
+        self.wait()
 
-    #def setUp(self):
-        #super(ApiTestCase, self).setUp()
+    def setUp(self):
+        super(TestCase, self).setUp()
 
-    #def tearDown(self):
-        #super(ApiTestCase, self).tearDown()
+        self.drop_collection(Repository)
+
+    # def tearDown(self):
+        # super(TestCase, self).tearDown()
 
     def get_config(self):
         return dict(
+            MONGO_DATABASES={
+                'default': {
+                    'host': 'localhost',
+                    'port': 4445,
+                    'database': 'gaas-test',
+                }
+            },
+            GIT_ROOT='/tmp/gaas_test/gitroot'
         )
 
     def get_server(self):

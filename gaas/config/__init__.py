@@ -10,3 +10,5 @@ Config.define('MONGO_DATABASES', {
         'database': 'gaas',
     }
 }, 'MongoDB Database connection.', 'Database')
+
+Config.define('GIT_ROOT', '/tmp/gaas/gitroot', 'Root folder to store git repositories.', 'Git')

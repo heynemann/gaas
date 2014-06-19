@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import logging
-
 from ujson import dumps
 from tornado.web import RequestHandler
 
@@ -31,3 +29,7 @@ class BaseHandler(RequestHandler):
     def write_json(self, obj):
         self.set_header("Content-Type", "application/json")
         self.write(dumps(obj))
+
+    @property
+    def config(self):
+        return self.application.config

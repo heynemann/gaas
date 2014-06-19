@@ -27,7 +27,7 @@ class GaasServerTestCase(TestCase):
         handlers = srv.get_handlers()
 
         expect(handlers).not_to_be_null()
-        expect(handlers).to_length(1)
+        expect(handlers).to_length(2)
 
     def test_server_plugins(self):
         srv = gaas.server.GaasServer()

@@ -7,6 +7,9 @@ from tornado.httpclient import AsyncHTTPClient
 
 from gaas import __version__
 from gaas.handlers import BaseHandler
+from gaas.handlers.repository import (
+    CreateRepositoryHandler
+)
 
 
 def main():
@@ -34,6 +37,7 @@ class GaasServer(Server):
     def get_handlers(self):
         handlers = [
             ('/version/?', VersionHandler),
+            ('/repo/new/?', CreateRepositoryHandler),
         ]
 
         return tuple(handlers)

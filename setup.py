@@ -13,8 +13,8 @@ tests_require = [
     'tox',
     'ipdb',
     'coveralls',
-    'mongoengine',
     'sphinx',
+    'factory_boy'
 ]
 
 setup(
