@@ -15,7 +15,8 @@ from tests.fixtures import RepositoryFactory
 class CreateRepositoryHandlerTestCase(TestCase):
     @gen_test
     def test_create_repository(self):
-        shutil.rmtree(self.server.config.GIT_ROOT)
+        if exists(self.server.config.GIT_ROOT):
+            shutil.rmtree(self.server.config.GIT_ROOT)
 
         repo_name = 'repository_handler_test_1'
         response = self.fetch(
