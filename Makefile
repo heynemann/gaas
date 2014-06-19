@@ -2,7 +2,6 @@ test:
 	@coverage run --branch `which nosetests` -vv --rednose -s tests/
 	@echo
 	@coverage report -m --fail-under=80
-	@$(MAKE) doctest
 
 ci_test: mongo_test test
 
