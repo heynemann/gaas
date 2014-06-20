@@ -46,6 +46,7 @@ setup(
         'cow-framework',
         'motorengine',
         'pygit2',
+        'gittornado',
     ],
 
     extras_require={

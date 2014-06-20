@@ -1,3 +1,6 @@
+run:
+	@gaas -c ./gaas/config/local.conf -d -vv
+
 test:
 	@coverage run --branch `which nosetests` -vv --rednose -s tests/
 	@echo

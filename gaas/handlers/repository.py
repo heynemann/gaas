@@ -1,12 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
-from os.path import abspath, join, exists, dirname
-
 from tornado import gen
-import pygit2
 
+from gaas import git
 from gaas.handlers import BaseHandler
 from gaas.models.repository import Repository
 
@@ -26,19 +23,9 @@ class CreateRepositoryHandler(BaseHandler):
             name=name
         )
 
-        self.create_git_repo(repo)
+        name = "%s-%s" % (repo.name[:10], str(repo.uuid))
+        git.create_git_repo(name, self.config.GIT_ROOT)
 
         self.set_header('X-REPOSITORY-ID', str(repo.uuid))
         self.write('OK')
         self.finish()
-
-    def create_git_repo(self, repository):
-        path = abspath(join(
-            self.config.GIT_ROOT,
-            "%s-%s" % (repository.name[:10], str(repository.uuid))
-        ))
-
-        if not exists(dirname(path)):
-            os.makedirs(dirname(path))
-
-        return pygit2.init_repository(path, False)
