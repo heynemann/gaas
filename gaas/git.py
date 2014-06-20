@@ -7,7 +7,7 @@ from os.path import abspath, join, exists, dirname
 import pygit2
 
 
-def create_git_repo(name, git_root):
+def create_git_repo(git_root, name, bare=False):
     path = abspath(join(
         git_root,
         name
@@ -16,7 +16,7 @@ def create_git_repo(name, git_root):
     if not exists(dirname(path)):
         os.makedirs(dirname(path))
 
-    return pygit2.init_repository(path, False)
+    return pygit2.init_repository(path, bare=bare)
 
 
 def clone(repo_url, repo_path, ref='refs/heads/master'):

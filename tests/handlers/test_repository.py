@@ -34,7 +34,7 @@ class CreateRepositoryHandlerTestCase(TestCase):
         expect(response.headers).to_include('X-REPOSITORY-ID')
         expect(response.headers['X-REPOSITORY-ID']).to_equal(str(repo.uuid))
 
-        path = '/tmp/gaas_test/gitroot/%s-%s/.git/' % (
+        path = '/tmp/gaas_test/gitroot/%s-%s' % (
             repo_name[:10],
             response.headers['X-REPOSITORY-ID']
         )

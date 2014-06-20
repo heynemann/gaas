@@ -24,7 +24,7 @@ class CreateRepositoryHandler(BaseHandler):
         )
 
         name = "%s-%s" % (repo.name[:10], str(repo.uuid))
-        git.create_git_repo(name, self.config.GIT_ROOT)
+        git.create_git_repo(self.config.GIT_ROOT, name, bare=True)
 
         self.set_header('X-REPOSITORY-ID', str(repo.uuid))
         self.write('OK')
