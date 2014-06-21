@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from os.path import exists, abspath, join
+import datetime
 
 from cow.server import Server
 from cow.plugins.motorengine_plugin import MotorEnginePlugin
 from tornado.httpclient import AsyncHTTPClient
-from gittornado import RPCHandler, InfoRefsHandler, FileHandler
+from gaas.git import RPCHandler, FileHandler, InfoRefsHandler
+from gittornado.util import get_date_header
 
 from gaas import __version__
 from gaas import git
@@ -16,9 +18,20 @@ from gaas.handlers.repository import (
 )
 
 
+cache_forever = lambda: [('Expires', get_date_header(datetime.datetime.now() + datetime.timedelta(days=365))),
+                 ('Pragma', 'no-cache'),
+                 ('Cache-Control', 'public, max-age=31556926')]
+
+dont_cache = lambda: [('Expires', 'Fri, 01 Jan 1980 00:00:00 GMT'),
+              ('Pragma', 'no-cache'),
+              ('Cache-Control', 'no-cache, max-age=0, must-revalidate')]
+
+
 def main():
     AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
     GaasServer.run()
+    # after many bizarre tests this should be the way to go:
+    # https://moocode.com/posts/6-code-your-own-multi-user-private-git-server-in-5-minutes
 
 
 class VersionHandler(BaseHandler):
@@ -51,7 +64,6 @@ class GaasServer(Server):
         userpw_base64 = author.strip()[5:].strip()
 
         user, pw = userpw_base64.decode('base64').split(':', 1)
-
         #if accessfile.has_option('users', user):
             #if accessfile.get('users', user) == pw:
                 #if accessfile.has_option('access', user):
