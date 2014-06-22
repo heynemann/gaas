@@ -5,7 +5,7 @@ from tornado.concurrent import return_future
 import factory
 import factory.alchemy
 
-from gaas.storage.sqlalchemy.models import Repository as SaRepository
+from gaas.storage.sqlalchemy import models as SaModels
 
 
 class MotorEngineFactory(factory.base.Factory):
@@ -37,7 +37,14 @@ class SqlAlchemyFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 
 class SaRepositoryFactory(SqlAlchemyFactory):
-    FACTORY_FOR = SaRepository
+    FACTORY_FOR = SaModels.Repository
 
     name = factory.Sequence(lambda n: 'repository {0}'.format(n))
     slug = factory.Sequence(lambda n: 'repository-{0}'.format(n))
+
+
+class SaUserFactory(SqlAlchemyFactory):
+    FACTORY_FOR = SaModels.User
+
+    name = factory.Sequence(lambda n: 'user {0}'.format(n))
+    slug = factory.Sequence(lambda n: 'user-{0}'.format(n))

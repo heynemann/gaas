@@ -12,8 +12,6 @@ from tests.fixtures import SaRepositoryFactory
 
 
 class CreateRepositoryHandlerTestCase(SqlAlchemyStorageTestCase):
-    from nose_focus import focus
-    @focus
     @gen_test
     def test_create_repository(self):
         if exists(self.server.config.GIT_ROOT):

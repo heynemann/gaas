@@ -21,3 +21,15 @@ class Repository(Base):
         'created_at', sa.DateTime,
         default=datetime.utcnow, nullable=False
     )
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = sa.Column(sa.Integer, primary_key=True)
+    name = sa.Column('name', sa.String(2000), nullable=False)
+    slug = sa.Column('slug', sa.String(2000), nullable=False)
+    created_at = sa.Column(
+        'created_at', sa.DateTime,
+        default=datetime.utcnow, nullable=False
+    )

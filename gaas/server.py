@@ -1,23 +1,21 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from os.path import exists, abspath, join
 import datetime
 
 from cow.server import Server
-from cow.plugins.motorengine_plugin import MotorEnginePlugin
 from tornado.httpclient import AsyncHTTPClient
-from gaas.git import RPCHandler, FileHandler, InfoRefsHandler
 from gittornado.util import get_date_header
 
 from gaas import __version__
-from gaas import git
 from gaas.utils import get_class
 from gaas.handlers import BaseHandler
 from gaas.handlers.repository import (
     CreateRepositoryHandler
 )
-
+from gaas.handlers.user import (
+    CreateUserHandler
+)
 
 cache_forever = lambda: [('Expires', get_date_header(datetime.datetime.now() + datetime.timedelta(days=365))),
                  ('Pragma', 'no-cache'),
@@ -57,13 +55,14 @@ class GaasServer(Server):
         handlers = [
             ('/version/?', VersionHandler),
             ('/repo/new/?', CreateRepositoryHandler),
+            ('/user/new/?', CreateUserHandler),
         ]
 
         return tuple(handlers)
 
     def get_plugins(self):
         return [
-            #MotorEnginePlugin,
+            # MotorEnginePlugin,
         ]
 
     def after_start(self, io_loop):

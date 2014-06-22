@@ -12,7 +12,7 @@ from tornado import gen
 from slugify import slugify
 
 from gaas.storage.base import BaseStorage
-from gaas.storage.sqlalchemy.models import Repository
+from gaas.storage.sqlalchemy.models import Repository, User
 
 logger = logging.getLogger(__file__)
 
@@ -119,3 +119,18 @@ class SqlAlchemyStorage(BaseStorage):
         self.session.add(repository)
         self.session.flush()
         raise gen.Return(repository)
+
+    @gen.coroutine
+    def get_user_by_name(self, name):
+        user = self.session.query(User).filter(User.name == name).first()
+        raise gen.Return(user)
+
+    @gen.coroutine
+    def create_user(self, name):
+        user = User(
+            name=name,
+            slug=slugify(name)
+        )
+        self.session.add(user)
+        self.session.flush()
+        raise gen.Return(user)
