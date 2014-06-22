@@ -14,7 +14,8 @@ class Repository(Base):
     __tablename__ = "repositories"
 
     id = sa.Column(sa.Integer, primary_key=True)
-    name = sa.Column('name', sa.String(120), nullable=False)
+    name = sa.Column('name', sa.String(2000), nullable=False)
+    slug = sa.Column('slug', sa.String(2000), nullable=False)
     uuid = sa.Column('uuid', sa.String(36), default=uuid4, nullable=False)
     created_at = sa.Column(
         'created_at', sa.DateTime,

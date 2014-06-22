@@ -8,8 +8,8 @@ from gaas import __version__
 
 
 class BaseHandler(RequestHandler):
-    def initialize(self, *args, **kw):
-        super(BaseHandler, self).initialize(*args, **kw)
+    def prepare(self, *args, **kw):
+        super(BaseHandler, self).prepare(*args, **kw)
         self.application.storage.connect()
 
     #def log_exception(self, typ, value, tb):

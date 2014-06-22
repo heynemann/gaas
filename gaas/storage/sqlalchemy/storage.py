@@ -8,8 +8,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from alembic.config import Config
 from alembic import command
+from tornado import gen
+from slugify import slugify
 
 from gaas.storage.base import BaseStorage
+from gaas.storage.sqlalchemy.models import Repository
 
 logger = logging.getLogger(__file__)
 
@@ -41,6 +44,13 @@ class SqlAlchemyStorage(BaseStorage):
             'SQLALCHEMY_AUTO_FLUSH',
             False,
             'Whether SqlAlchemy should auto-flush every transaction.',
+            'Storage'
+        )
+
+        config.define(
+            'SQLALCHEMY_COMMIT_ON_DISCONNECT',
+            True,
+            'Whether SqlAlchemy should commit when disconnecting.',
             'Storage'
         )
 
@@ -82,12 +92,11 @@ class SqlAlchemyStorage(BaseStorage):
 
         if error:
             self.session.rollback()
-        else:
+        elif self.config.SQLALCHEMY_COMMIT_ON_DISCONNECT:
             self.session.commit()
 
         if close_connection:
             self.session.close()
-        self.session = None
 
     def destruct(self):
         pass
@@ -95,3 +104,18 @@ class SqlAlchemyStorage(BaseStorage):
     def migrate(self):
         alembic_cfg = Config(self.config.ALEMBIC_CONFIGURATION_PATH)
         command.upgrade(alembic_cfg, "head")
+
+    @gen.coroutine
+    def get_repository_by_name(self, name):
+        repository = self.session.query(Repository).filter(Repository.name == name).first()
+        raise gen.Return(repository)
+
+    @gen.coroutine
+    def create_repository(self, name):
+        repository = Repository(
+            name=name,
+            slug=slugify(name)
+        )
+        self.session.add(repository)
+        self.session.flush()
+        raise gen.Return(repository)

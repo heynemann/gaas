@@ -7,18 +7,19 @@ import shutil
 from preggy import expect
 from tornado.testing import gen_test
 
-from gaas.models.repository import Repository
-from tests import TestCase
-from tests.fixtures import RepositoryFactory
+from tests import SqlAlchemyStorageTestCase
+from tests.fixtures import SaRepositoryFactory
 
 
-class CreateRepositoryHandlerTestCase(TestCase):
+class CreateRepositoryHandlerTestCase(SqlAlchemyStorageTestCase):
+    from nose_focus import focus
+    @focus
     @gen_test
     def test_create_repository(self):
         if exists(self.server.config.GIT_ROOT):
             shutil.rmtree(self.server.config.GIT_ROOT)
 
-        repo_name = 'repository_handler_test_1'
+        repo_name = 'repository handler test 1'
         response = self.fetch(
             '/repo/new',
             method='POST',
@@ -27,22 +28,21 @@ class CreateRepositoryHandlerTestCase(TestCase):
         expect(response.code).to_equal(200)
         expect(response.body).to_be_like('OK')
 
-        Repository.objects.get(name=repo_name, callback=self.stop)
-        repo = self.wait()
+        repo = yield self.storage.get_repository_by_name(repo_name)
         expect(repo).not_to_be_null()
 
         expect(response.headers).to_include('X-REPOSITORY-ID')
-        expect(response.headers['X-REPOSITORY-ID']).to_equal(str(repo.uuid))
+        expect(response.headers['X-REPOSITORY-ID']).to_equal(str(repo.slug))
 
-        path = '/tmp/gaas_test/gitroot/%s-%s' % (
-            repo_name[:10],
+        path = '%s/%s' % (
+            self.server.config.GIT_ROOT.rstrip('/'),
             response.headers['X-REPOSITORY-ID']
         )
         expect(exists(path)).to_be_true()
 
     @gen_test
     def test_create_repository_already_exists(self):
-        repo = yield RepositoryFactory.create()
+        repo = SaRepositoryFactory.create()
         response = self.fetch(
             '/repo/new',
             method='POST',

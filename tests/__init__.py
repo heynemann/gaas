@@ -79,14 +79,19 @@ class SqlAlchemyStorageTestCase(TestCase):
             SQLALCHEMY_AUTO_FLUSH=True,
             SQLALCHEMY_POOL_SIZE=1,
             SQLALCHEMY_POOL_MAX_OVERFLOW=0,
+            SQLALCHEMY_COMMIT_ON_DISCONNECT=True,
             GIT_ROOT='/tmp/gaas_test/gitroot',
         )
 
     def setUp(self):
         super(TestCase, self).setUp()
-        self.server.application.storage.session = db
         SaRepositoryFactory.FACTORY_SESSION = db
         self.server.application.storage.connect()
+        self.server.application.storage.session = db
+
+    @property
+    def storage(self):
+        return self.server.application.storage
 
     @property
     def db(self):

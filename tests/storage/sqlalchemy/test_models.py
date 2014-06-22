@@ -13,6 +13,8 @@ class RepositoryModelTestCase(SqlAlchemyStorageTestCase):
         repo = SaRepositoryFactory.create()
         expect(repo.id).to_be_greater_than(0)
 
-        repository = self.db.query(Repository).filter(Repository.name==repo.name).one()
+        repository = self.db.query(Repository).filter(Repository.name == repo.name).one()
         expect(repository).not_to_be_null()
         expect(repository.id).to_equal(repo.id)
+        expect(repository.name).to_equal(repo.name)
+        expect(repository.slug).to_equal(repo.slug)

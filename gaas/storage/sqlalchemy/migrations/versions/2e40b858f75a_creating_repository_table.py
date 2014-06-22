@@ -18,7 +18,8 @@ def upgrade():
     op.create_table(
         'repositories',
         sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('name', sa.String(120), nullable=False),
+        sa.Column('name', sa.String(2000), nullable=False),
+        sa.Column('slug', sa.String(2000), nullable=False),
         sa.Column('uuid', sa.String(36), nullable=False),
         sa.Column('created_at', sa.DateTime, nullable=True),
     )

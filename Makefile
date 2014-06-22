@@ -1,10 +1,13 @@
 run:
 	@gaas -c ./gaas/config/local.conf -d -vvv -p 9999
 
-test:
+test: data_test
 	@coverage run --branch `which nosetests` -vv --rednose -s tests/
 	@echo
 	@coverage report -m --fail-under=80
+
+focus:
+	@coverage run --branch `which nosetests` -vv --rednose --with-focus -s tests/
 
 ci_test: mongo_test test
 

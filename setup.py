@@ -16,6 +16,7 @@ tests_require = [
     'sphinx',
     'factory_boy',
     'alembic',
+    'nose_focus',
 ]
 
 setup(
@@ -48,6 +49,7 @@ setup(
         'motorengine',
         'pygit2',
         'gittornado',
+        'python-slugify'
     ],
 
     extras_require={

@@ -39,4 +39,5 @@ class SqlAlchemyFactory(factory.alchemy.SQLAlchemyModelFactory):
 class SaRepositoryFactory(SqlAlchemyFactory):
     FACTORY_FOR = SaRepository
 
-    name = factory.Sequence(lambda n: 'repository-{0}'.format(n))
+    name = factory.Sequence(lambda n: 'repository {0}'.format(n))
+    slug = factory.Sequence(lambda n: 'repository-{0}'.format(n))
