@@ -29,3 +29,21 @@ mongo_test: kill_mongo_test
 	@rm -rf /tmp/gaas_test/mongodata && mkdir -p /tmp/gaas_test/mongodata
 	@mongod --dbpath /tmp/gaas_test/mongodata --logpath /tmp/gaas_test/mongotestlog --port 4445 --quiet --smallfiles --oplogSize 128 &
 	@sleep 2
+
+migration:
+	@cd gaas/storage/sqlalchemy/ && alembic revision -m "$(DESC)"
+
+drop_now drop:
+	@mysql -u root -e "DROP DATABASE IF EXISTS gaas; CREATE DATABASE IF NOT EXISTS gaas"
+	@echo "DB RECREATED"
+
+drop_test:
+	@-cd tests/ && alembic downgrade base
+	@mysql -u root -e "DROP DATABASE IF EXISTS test_gaas; CREATE DATABASE IF NOT EXISTS test_gaas"
+	@echo "DB RECREATED"
+
+data db:
+	@cd gaas/storage/sqlalchemy/ && alembic upgrade head
+
+data_test:
+	@cd tests/ && alembic upgrade head

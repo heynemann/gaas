@@ -10,6 +10,7 @@ from gaas import __version__
 class BaseHandler(RequestHandler):
     def initialize(self, *args, **kw):
         super(BaseHandler, self).initialize(*args, **kw)
+        self.application.storage.connect(self)
 
     #def log_exception(self, typ, value, tb):
         #for handler in self.application.error_handlers:
@@ -24,11 +25,15 @@ class BaseHandler(RequestHandler):
         #super(BaseHandler, self).log_exception(typ, value, tb)
 
     def on_finish(self):
-        pass
+        self.storage.disconnect(self)
 
     def write_json(self, obj):
         self.set_header("Content-Type", "application/json")
         self.write(dumps(obj))
+
+    @property
+    def storage(self):
+        return self.application.storage
 
     @property
     def config(self):

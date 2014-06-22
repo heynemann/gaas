@@ -14,7 +14,8 @@ tests_require = [
     'ipdb',
     'coveralls',
     'sphinx',
-    'factory_boy'
+    'factory_boy',
+    'alembic',
 ]
 
 setup(
