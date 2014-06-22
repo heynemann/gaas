@@ -73,12 +73,20 @@ class SqlAlchemyStorage(BaseStorage):
             lambda: scoped_session(self.sqlalchemy_db_maker)
 
     def connect(self):
-        self.session = self.get_sqlalchemy_session()
+        if getattr(self, 'session', None) is None:
+            self.session = self.get_sqlalchemy_session()
 
-    def disconnect(self):
+    def disconnect(self, error, close_connection=True):
         if not self.session:
             return
-        self.session.close()
+
+        if error:
+            self.session.rollback()
+        else:
+            self.session.commit()
+
+        if close_connection:
+            self.session.close()
         self.session = None
 
     def destruct(self):

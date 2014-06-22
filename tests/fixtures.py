@@ -3,8 +3,9 @@
 
 from tornado.concurrent import return_future
 import factory
+import factory.alchemy
 
-from gaas.models.repository import Repository
+from gaas.storage.sqlalchemy.models import Repository as SaRepository
 
 
 class MotorEngineFactory(factory.base.Factory):
@@ -24,7 +25,18 @@ class MotorEngineFactory(factory.base.Factory):
         instance.save(callback=callback)
 
 
-class RepositoryFactory(MotorEngineFactory):
-    FACTORY_FOR = Repository
+class SqlAlchemyFactory(factory.alchemy.SQLAlchemyModelFactory):
+    @classmethod
+    def _create(cls, target_class, *args, **kwargs):
+        instance = super(SqlAlchemyFactory, cls)._create(
+            target_class, *args, **kwargs
+        )
+        if hasattr(cls, 'FACTORY_SESSION') and cls.FACTORY_SESSION is not None:
+            cls.FACTORY_SESSION.flush()
+        return instance
 
-    name = factory.Sequence(lambda n: 'repository_{0}'.format(n))
+
+class SaRepositoryFactory(SqlAlchemyFactory):
+    FACTORY_FOR = SaRepository
+
+    name = factory.Sequence(lambda n: 'repository-{0}'.format(n))

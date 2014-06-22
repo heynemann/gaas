@@ -45,5 +45,5 @@ drop_test:
 data db:
 	@cd gaas/storage/sqlalchemy/ && alembic upgrade head
 
-data_test:
+data_test: drop_test
 	@cd tests/ && alembic upgrade head

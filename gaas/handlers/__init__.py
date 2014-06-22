@@ -10,7 +10,7 @@ from gaas import __version__
 class BaseHandler(RequestHandler):
     def initialize(self, *args, **kw):
         super(BaseHandler, self).initialize(*args, **kw)
-        self.application.storage.connect(self)
+        self.application.storage.connect()
 
     #def log_exception(self, typ, value, tb):
         #for handler in self.application.error_handlers:
@@ -25,7 +25,7 @@ class BaseHandler(RequestHandler):
         #super(BaseHandler, self).log_exception(typ, value, tb)
 
     def on_finish(self):
-        self.storage.disconnect(self)
+        self.storage.disconnect(self.get_status() > 399)
 
     def write_json(self, obj):
         self.set_header("Content-Type", "application/json")

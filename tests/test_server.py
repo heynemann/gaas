@@ -27,14 +27,13 @@ class GaasServerTestCase(TestCase):
         handlers = srv.get_handlers()
 
         expect(handlers).not_to_be_null()
-        expect(handlers).to_length(6)
+        expect(handlers).to_length(2)
 
     def test_server_plugins(self):
         srv = gaas.server.GaasServer()
         plugins = srv.get_plugins()
 
-        expect(plugins).to_length(1)
-        expect(plugins[0]).to_equal(MotorEnginePlugin)
+        expect(plugins).to_length(0)
 
     @patch('gaas.server.GaasServer')
     def test_server_main_function(self, server_mock):

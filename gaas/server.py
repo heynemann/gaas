@@ -41,10 +41,11 @@ class VersionHandler(BaseHandler):
 
 
 class GaasServer(Server):
-    def __init__(self, debug=None, *args, **kw):
+    def __init__(self, debug=None, storage=None, *args, **kw):
         super(GaasServer, self).__init__(*args, **kw)
 
         self.force_debug = debug
+        self.storage = storage
 
     def initialize_app(self, *args, **kw):
         super(GaasServer, self).initialize_app(*args, **kw)
@@ -62,12 +63,17 @@ class GaasServer(Server):
 
     def get_plugins(self):
         return [
-            MotorEnginePlugin,
+            #MotorEnginePlugin,
         ]
 
     def after_start(self, io_loop):
-        self.application.storage_module = get_class(self.config.STORAGE)
-        self.application.storage = self.application.storage_module(self, self.application, self.config, io_loop)
+        if self.storage is not None:
+            self.application.storage_module = self.storage.__class__
+            self.application.storage = self.storage
+        else:
+            self.application.storage_module = get_class(self.config.STORAGE)
+            self.application.storage = self.application.storage_module(self, self.application, self.config, io_loop)
+
         self.application.storage.define_config(self.config)
         self.config.reload()
         self.application.storage.initialize()

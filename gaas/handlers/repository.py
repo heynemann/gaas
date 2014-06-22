@@ -5,7 +5,7 @@ from tornado import gen
 
 from gaas import git
 from gaas.handlers import BaseHandler
-from gaas.models.repository import Repository
+#from gaas.models.repository import Repository
 
 
 class CreateRepositoryHandler(BaseHandler):
