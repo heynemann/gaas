@@ -3,6 +3,7 @@
 
 from os.path import abspath, dirname, join
 import logging
+import hashlib
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -12,7 +13,7 @@ from tornado import gen
 from slugify import slugify
 
 from gaas.storage.base import BaseStorage
-from gaas.storage.sqlalchemy.models import Repository, User
+from gaas.storage.sqlalchemy.models import Repository, User, Key
 
 logger = logging.getLogger(__file__)
 
@@ -124,6 +125,31 @@ class SqlAlchemyStorage(BaseStorage):
     def get_user_by_name(self, name):
         user = self.session.query(User).filter(User.name == name).first()
         raise gen.Return(user)
+
+    @gen.coroutine
+    def get_user_by_slug(self, slug):
+        user = self.session.query(User).filter(User.slug == slug).first()
+        raise gen.Return(user)
+
+    @gen.coroutine
+    def add_user_key(self, user, key):
+        public_key = key.split(' ')
+        if len(public_key) == 1:
+            key = public_key[0]
+        else:
+            key = public_key[1]
+
+        public_key_hash = hashlib.sha512(key).hexdigest()
+
+        key = Key(
+            user=user,
+            public_key=key,
+            public_key_hash=public_key_hash
+        )
+
+        self.session.add(key)
+        self.session.flush()
+        raise gen.Return(key)
 
     @gen.coroutine
     def create_user(self, name):

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-from cow.plugins.motorengine_plugin import MotorEnginePlugin
 from preggy import expect
 from mock import patch
 
@@ -27,7 +26,7 @@ class GaasServerTestCase(TestCase):
         handlers = srv.get_handlers()
 
         expect(handlers).not_to_be_null()
-        expect(handlers).to_length(3)
+        expect(handlers).to_length(4)
 
     def test_server_plugins(self):
         srv = gaas.server.GaasServer()

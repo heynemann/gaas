@@ -19,7 +19,7 @@ def upgrade():
         'user_keys',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('user_id', sa.Integer, nullable=False),
-        sa.Column('public_key', sa.String(512), nullable=False),
+        sa.Column('public_key', sa.String(2000), nullable=False),
         sa.Column('public_key_hash', sa.String(128), nullable=False),
         sa.Column('created_at', sa.DateTime, nullable=True),
     )

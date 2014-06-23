@@ -38,8 +38,6 @@ class CreateRepositoryHandlerTestCase(SqlAlchemyStorageTestCase):
         )
         expect(exists(path)).to_be_true()
 
-    from nose_focus import focus
-    @focus
     @gen_test
     def test_create_repository_already_exists(self):
         repo = SaRepositoryFactory.create()

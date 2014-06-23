@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from os.path import exists
-import shutil
+from urllib import quote
 
 from preggy import expect
 from tornado.testing import gen_test
@@ -45,17 +44,18 @@ class AddUserKeyHandlerTestCase(SqlAlchemyStorageTestCase):
     @gen_test
     def test_add_user_key(self):
         user = SaUserFactory.create()
+        name = user.name
         key = """ssh-rsa DAAAB3NzaC1yc2EAAAADAQABAAABAQD5eYo2ZM8Inuf73WqA3C8HCPjb1DUWLs4z2x+eCY3VHc7oZZmVguB/kAGxUmIpxvMKtNeOicHIfUvJ6UIibl2vagFn0+t8KooUovbPugxFSEeuYPKcqhA5U3hlAGbYa2HS5Z+2pImLidQuCnv07vO7cQFshEndsX11ff4ZjrpvI+LoidzZkxeOwGkMTrkmMNrvT4u26OBQGPHJU0JVq3e4X1FjrdSQ2lJHZ5qxdyZn84pypyPctc2WaNeHKV0h4UeqRK7VLCjpkrNXpZlFj0JO3Yetac2bkl6qpR+FuUPUdxeTb2QmdHFi6MN1yfX+YBSTxMWniC/gQDRQ8PYYTAvV heynemann@someserver"""
 
         response = self.fetch(
             '/users/%s/add-key' % user.slug,
             method='POST',
-            body='key=%s' % key
+            body='key=%s' % quote(key)
         )
         expect(response.code).to_equal(200)
         expect(response.body).to_be_like('OK')
 
-        user = yield self.storage.get_user_by_name(user.name)
+        user = yield self.storage.get_user_by_name(name)
         expect(user).not_to_be_null()
         expect(user.keys).to_length(1)
 

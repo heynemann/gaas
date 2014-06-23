@@ -33,30 +33,22 @@ class AddUserKeyHandler(BaseHandler):
     @gen.coroutine
     def post(self, user_slug):
         user = yield self.storage.get_user_by_slug(user_slug)
+
         if user is None:
             self.set_status(404, 'User not found')
             self.finish()
             return
 
-        public_key = self.get_argument('key').split(' ')
+        public_key = self.get_argument('key')
 
         if not public_key:
             self.set_status(404, 'Invalid public key')
             self.finish()
             return
 
-        if len(public_key) == 1:
-            key = public_key[0]
-        else:
-            key = public_key[1]
-
-
-        public_key_hash = hashlib.sha512(key)
-
-        key = yield self.storage.add_user_key(
+        yield self.storage.add_user_key(
             user=user,
-            key=key,
-            key_hash=public_key_hash
+            key=public_key
         )
 
         self.write('OK')

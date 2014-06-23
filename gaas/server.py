@@ -14,7 +14,8 @@ from gaas.handlers.repository import (
     CreateRepositoryHandler
 )
 from gaas.handlers.user import (
-    CreateUserHandler
+    CreateUserHandler,
+    AddUserKeyHandler
 )
 
 cache_forever = lambda: [('Expires', get_date_header(datetime.datetime.now() + datetime.timedelta(days=365))),
@@ -53,9 +54,10 @@ class GaasServer(Server):
 
     def get_handlers(self):
         handlers = [
-            ('/version/?', VersionHandler),
-            ('/repo/new/?', CreateRepositoryHandler),
-            ('/user/new/?', CreateUserHandler),
+            (r'/version/?', VersionHandler),
+            (r'/users/(?P<user_slug>[^/]+)/add-key/?', AddUserKeyHandler),
+            (r'/repo/new/?', CreateRepositoryHandler),
+            (r'/user/new/?', CreateUserHandler),
         ]
 
         return tuple(handlers)

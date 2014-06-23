@@ -29,7 +29,7 @@ class Key(Base):
 
     id = sa.Column(sa.Integer, primary_key=True)
     user_id = sa.Column('user_id', sa.Integer, sa.ForeignKey('users.id'), nullable=False)
-    public_key = sa.Column('public_key', sa.String(512), nullable=False)
+    public_key = sa.Column('public_key', sa.String(2000), nullable=False)
     public_key_hash = sa.Column('public_key_hash', sa.String(128), nullable=False)
     created_at = sa.Column(
         'created_at', sa.DateTime,
