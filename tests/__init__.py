@@ -5,8 +5,6 @@ import os
 
 from cow.testing import CowTestCase
 from tornado.httpclient import AsyncHTTPClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 from gaas.config import Config
 from gaas.server import GaasServer
@@ -14,18 +12,7 @@ from gaas.storage.sqlalchemy import SqlAlchemyStorage
 from tests.fixtures import (
     SaRepositoryFactory, SaUserFactory, SaKeyFactory
 )
-
-
-autoflush = True
-engine = create_engine(
-    "mysql+mysqldb://root@localhost:3306/test_gaas",
-    convert_unicode=True,
-    pool_size=1,
-    max_overflow=0,
-    echo=False
-)
-maker = sessionmaker(bind=engine, autoflush=autoflush)
-db = scoped_session(maker)
+from tests.db import db
 
 
 class TestCase(CowTestCase):

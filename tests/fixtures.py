@@ -1,11 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import hashlib
+
 from tornado.concurrent import return_future
 import factory
 import factory.alchemy
 
 from gaas.storage.sqlalchemy import models as SaModels
+from tests.db import db
 
 
 class MotorEngineFactory(factory.base.Factory):
@@ -37,21 +40,28 @@ class SqlAlchemyFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 
 class SaRepositoryFactory(SqlAlchemyFactory):
-    FACTORY_FOR = SaModels.Repository
+    class Meta:
+        model = SaModels.Repository
+        sqlalchemy_session = db
 
     name = factory.Sequence(lambda n: 'repository {0}'.format(n))
     slug = factory.Sequence(lambda n: 'repository-{0}'.format(n))
 
 
 class SaUserFactory(SqlAlchemyFactory):
-    FACTORY_FOR = SaModels.User
+    class Meta:
+        model = SaModels.User
+        sqlalchemy_session = db
 
     name = factory.Sequence(lambda n: 'user {0}'.format(n))
     slug = factory.Sequence(lambda n: 'user-{0}'.format(n))
 
 
 class SaKeyFactory(SqlAlchemyFactory):
-    FACTORY_FOR = SaModels.Key
+    class Meta:
+        model = SaModels.Key
+        sqlalchemy_session = db
 
     public_key = factory.Sequence(lambda n: 'key-{0}'.format(n))
+    public_key_hash = factory.LazyAttribute(lambda item: hashlib.sha512(item.public_key))
     user = factory.SubFactory(SaUserFactory)

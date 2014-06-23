@@ -17,6 +17,7 @@ tests_require = [
     'factory_boy',
     'alembic',
     'nose_focus',
+    'mysql-python',
 ]
 
 setup(

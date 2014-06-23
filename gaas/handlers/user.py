@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import hashlib
+
 from tornado import gen
 
 from gaas.handlers import BaseHandler
@@ -48,9 +50,13 @@ class AddUserKeyHandler(BaseHandler):
         else:
             key = public_key[1]
 
+
+        public_key_hash = hashlib.sha512(key)
+
         key = yield self.storage.add_user_key(
             user=user,
-            key=key
+            key=key,
+            key_hash=public_key_hash
         )
 
         self.write('OK')
