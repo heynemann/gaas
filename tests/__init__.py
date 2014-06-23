@@ -11,7 +11,9 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from gaas.config import Config
 from gaas.server import GaasServer
 from gaas.storage.sqlalchemy import SqlAlchemyStorage
-from tests.fixtures import SaRepositoryFactory, SaUserFactory
+from tests.fixtures import (
+    SaRepositoryFactory, SaUserFactory, SaKeyFactory
+)
 
 
 autoflush = True
@@ -87,6 +89,7 @@ class SqlAlchemyStorageTestCase(TestCase):
         super(TestCase, self).setUp()
         SaRepositoryFactory.FACTORY_SESSION = db
         SaUserFactory.FACTORY_SESSION = db
+        SaKeyFactory.FACTORY_SESSION = db
         self.server.application.storage.connect()
         self.server.application.storage.session = db
 

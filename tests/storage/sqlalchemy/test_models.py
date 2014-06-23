@@ -3,9 +3,9 @@
 
 from preggy import expect
 
-from gaas.storage.sqlalchemy.models import Repository, User
+from gaas.storage.sqlalchemy.models import Repository, User, Key
 from tests import SqlAlchemyStorageTestCase
-from tests.fixtures import SaRepositoryFactory, SaUserFactory
+from tests.fixtures import SaRepositoryFactory, SaUserFactory, SaKeyFactory
 
 
 class RepositoryModelTestCase(SqlAlchemyStorageTestCase):
@@ -30,3 +30,19 @@ class UserModelTestCase(SqlAlchemyStorageTestCase):
         expect(loaded.id).to_equal(user.id)
         expect(loaded.name).to_equal(user.name)
         expect(loaded.slug).to_equal(user.slug)
+
+
+class KeysModelTestCase(SqlAlchemyStorageTestCase):
+    def test_can_create_key(self):
+        user = SaUserFactory.create()
+
+        key = SaKeyFactory.create(user=user)
+
+        loaded = self.db.query(Key).filter(Key.id == key.id).one()
+        expect(loaded).not_to_be_null()
+        expect(loaded.id).to_equal(key.id)
+        expect(loaded.public_key).to_equal(key.public_key)
+
+        self.db.refresh(user)
+        expect(user.keys).to_length(1)
+        expect(user.keys[0].id).to_equal(key.id)

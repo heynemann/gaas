@@ -48,3 +48,10 @@ class SaUserFactory(SqlAlchemyFactory):
 
     name = factory.Sequence(lambda n: 'user {0}'.format(n))
     slug = factory.Sequence(lambda n: 'user-{0}'.format(n))
+
+
+class SaKeyFactory(SqlAlchemyFactory):
+    FACTORY_FOR = SaModels.Key
+
+    public_key = factory.Sequence(lambda n: 'key-{0}'.format(n))
+    user = factory.SubFactory(SaUserFactory)
