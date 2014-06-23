@@ -20,6 +20,7 @@ def upgrade():
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('user_id', sa.Integer, nullable=False),
         sa.Column('public_key', sa.String(512), nullable=False),
+        sa.Column('public_key_hash', sa.String(128), nullable=False),
         sa.Column('created_at', sa.DateTime, nullable=True),
     )
 
@@ -28,7 +29,7 @@ def upgrade():
         ["user_id"], ["id"]
     )
 
-    op.create_unique_constraint("uq_user_keys_public_key", "user_keys", ["public_key"])
+    op.create_unique_constraint("uq_user_keys_public_key", "user_keys", ["public_key_hash"])
 
 
 def downgrade():
