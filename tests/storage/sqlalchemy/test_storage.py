@@ -36,6 +36,14 @@ class StorageTestCase(SqlAlchemyStorageTestCase):
         expect(loaded.id).to_equal(user.id)
 
     @gen_test
+    def test_can_get_user_by_slug(self):
+        user = SaUserFactory.create()
+
+        loaded = yield self.storage.get_user_by_slug(user.slug)
+
+        expect(loaded.id).to_equal(user.id)
+
+    @gen_test
     def test_can_create_user(self):
         name = "sqlalchemy storage test can create user"
         slug = "sqlalchemy-storage-test-can-create-user"
@@ -44,3 +52,13 @@ class StorageTestCase(SqlAlchemyStorageTestCase):
         expect(user.id).to_be_greater_than(0)
         expect(user.name).to_equal(name)
         expect(user.slug).to_equal(slug)
+
+    @gen_test
+    def test_can_add_user_key(self):
+        user = SaUserFactory.create()
+
+        key = yield self.storage.add_user_key(user, 'ssh-rsa some-random-key heynemann@mypc')
+
+        expect(key.id).to_be_greater_than(0)
+        expect(key.user_id).to_equal(user.id)
+        expect(key.public_key).to_equal('some-random-key')

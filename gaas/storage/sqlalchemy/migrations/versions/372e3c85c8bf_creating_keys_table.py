@@ -16,7 +16,7 @@ import sqlalchemy as sa
 
 def upgrade():
     op.create_table(
-        'keys',
+        'user_keys',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('user_id', sa.Integer, nullable=False),
         sa.Column('public_key', sa.String(512), nullable=False),
@@ -24,14 +24,14 @@ def upgrade():
     )
 
     op.create_foreign_key(
-        "fk_keys_user", "keys", "users",
+        "fk_user_keys_user", "user_keys", "users",
         ["user_id"], ["id"]
     )
 
-    op.create_unique_constraint("uq_keys_public_key", "keys", ["public_key"])
+    op.create_unique_constraint("uq_user_keys_public_key", "user_keys", ["public_key"])
 
 
 def downgrade():
-    op.drop_constraint('uq_keys_public_key', 'keys', type_="unique")
-    op.drop_constraint('fk_keys_user', 'keys', type_="foreignkey")
-    op.drop_table('keys')
+    op.drop_constraint('uq_user_keys_public_key', 'user_keys', type_="unique")
+    op.drop_constraint('fk_user_keys_user', 'user_keys', type_="foreignkey")
+    op.drop_table('user_keys')

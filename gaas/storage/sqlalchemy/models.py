@@ -25,7 +25,7 @@ class Repository(Base):
 
 
 class Key(Base):
-    __tablename__ = "keys"
+    __tablename__ = "user_keys"
 
     id = sa.Column(sa.Integer, primary_key=True)
     user_id = sa.Column('user_id', sa.Integer, sa.ForeignKey('users.id'), nullable=False)
